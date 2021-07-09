@@ -17,6 +17,7 @@ function results = solveModel_final(param,data,settings)
     while outerdiff>tol
         w_tr = w';
         v = (((d.^(-1)).*w_tr).*(u.*(rr.^(beta1-1)))).^theta;
+        v_welfare = (((d.^(-1*xi)).*w_tr).*(u.*(rr.^(beta1-1)))).^theta;
         W = gamma(1-(1/theta))*(sum(sum(v,2),1))^(1/theta);
         
         % Residents
@@ -44,7 +45,7 @@ function results = solveModel_final(param,data,settings)
         u_prime = Omega.^mu_u;
         A_prime = A_bar;
        
-        Lr_welfcalc = sum(v(:))^(1/theta);
+        Lr_welfcalc = sum(v_welfare(:))^(1/theta);
         if open_city==1
             L_bar_prime = (Lr_welfcalc./U_bar)'.*L_bar;
             U_bar_prime = U_bar;

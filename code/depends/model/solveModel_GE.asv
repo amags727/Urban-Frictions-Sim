@@ -17,6 +17,7 @@ function results = solveModel_final(param,data,settings)
     while outerdiff>tol
         w_tr = w';
         v = (((d.^(-1)).*w_tr).*(u.*(rr.^(beta1-1)))).^theta;
+        v_welfare = (((d.^(-1*xi)).*w_tr).*(u.*(rr.^(beta1-1)))).^theta;
         W = gamma(1-(1/theta))*(sum(sum(v,2),1))^(1/theta);
         
         % Residents
@@ -44,7 +45,7 @@ function results = solveModel_final(param,data,settings)
         u_prime = Omega.^mu_u;
         A_prime = A_bar;
        
-        Lr_welfcalc = sum(v(:))^(1/theta);
+        Lr_welfcalc = sum(v_welfare(:))^(1/theta);
         if open_city==1
             L_bar_prime = (Lr_welfcalc./U_bar)'.*L_bar;
             U_bar_prime = U_bar;
@@ -55,6 +56,7 @@ function results = solveModel_final(param,data,settings)
 
         w  = psi1*w_prime + (1-psi1)*w;
         w  = w./(prod(w)^(1/I));
+        w_prime= w_prime./(prod(w_prime)^(1/I));
         rr = psi1*rr_prime + (1-psi1)*rr;
         rf = psi1*rf_prime + (1-psi1)*rf;
         u  = psi1*u_prime + (1-psi1)*u;
@@ -70,36 +72,15 @@ function results = solveModel_final(param,data,settings)
         L_bar_diff = abs(L_bar_prime-L_bar);
         U_bar_diff = abs(U_bar_prime-U_bar);
         outerdiff = max([w_diff; rr_diff; rf_diff; u_diff; A_diff; L_bar_diff;U_bar_diff]);
-       if outerdiffw_diff
-           disp("w_diff");
-       end 
-        if outerdiff==rr_diff
-           disp("rr_diff");
-        end 
-       if outerdiff==u_diff
-           disp("u_diff");
-       end 
-       if outerdiff==A_diff
-           disp("A_diff");
-       end 
-      if outerdiff==L_bar_diff
-           disp("L_bar_diff");
-      end 
-      if outerdiff==U_bar_diff
-           disp("U_bar_diff");
-       end 
-       
-    
-   
-           
-       
-            
+  
        iter = iter + 1;
        if iter>1000
+           disp("failure")
             break
        end
     end
-    
+    if iter<1000
+    end 
     % Save and export
     results = v2struct(w,rr,rf,v,u,A,L_r,L_f,w_bar,pi_ij,res_share,l_share,W,Omega,u_bar,CMA,L_bar,U_bar);    
-end
+

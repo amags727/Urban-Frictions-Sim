@@ -1,0 +1,30 @@
+	(1)	(2)
+VARIABLES	welfare improvement	welfare improvement
+		
+95.d_shock	-0.531***	-0.512***
+	(0.195)	(0.0450)
+99.d_shock	-0.531***	-0.512***
+	(0.195)	(0.0450)
+log_distance	-0.00374	
+	(0.0117)	
+90b.d_shock#co.log_distance	0	
+	(0)	
+95.d_shock#c.log_distance	0.00374	
+	(0.0308)	
+99.d_shock#c.log_distance	0.00374	
+	(0.0308)	
+log_popularity		0.000262
+		(0.000788)
+90b.d_shock#co.log_popularity		0
+		(0)
+95.d_shock#c.log_popularity		-0.000262
+		(0.00208)
+99.d_shock#c.log_popularity		-0.000262
+		(0.00208)
+Constant	-3.051***	-3.070***
+	(0.0739)	(0.0169)
+		
+Observations	7,989	8,000
+R-squared	0.147	0.147
+Standard errors in parentheses		
+*** p<0.01, ** p<0.05, * p<0.1		

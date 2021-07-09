@@ -124,7 +124,7 @@ GE   = cell(mu_u_size,delta_u_size);
             save('../output/results_init.mat', 'results_init_eqbm');
             
     %% Test the effect of changing distances when there are no frictions  
-    sample_size= 500; 
+    sample_size= 1000; 
     no_friction_results= ones(sample_size,2 + length(distance_shock));
     %set the starting values based on the initial equilib. 
             open_city  = 0;
@@ -154,22 +154,17 @@ GE   = cell(mu_u_size,delta_u_size);
                 no_friction_results(j, 1)= log(t(sampled_nodes(j,1),sampled_nodes(j,2)));
                 no_friction_results(j, 2)= log(results_init_eqbm.pi_ij(sampled_nodes(j,1),sampled_nodes(j,2)));
                 if mod( j , sample_size/10 )==0
-                    display("no frictions");
-                    display(i);
                     display(j);
-                    
-               
                 end 
-                no_friction_results(j,i+2)= log(sim_eq.U_bar)- log(results_init_eqbm.U_bar);
+                no_friction_results(j,i+2)= log(sim_eq.U_bar)- results_init_eqbm.U_bar;
         end
     end
     
-save('../output/no_friction_results.mat', 'no_friction_results');
-varnames= ["og_distance" "og_popularity" "d_shock_" + string(distance_shock)]
-writematrix([varnames; no_friction_results],'../output/no_friction_results.csv');
+save('../output/results1.mat', 'no_friction_results');
+
 
 %% Test the effect of changing distances when there are frictions  
-    sample_size= 500; 
+    sample_size= 1000; 
     friction_results= ones(sample_size,2 + length(xi_set));
     %set the starting values based on the initial equilib. 
             open_city  = 0;
@@ -185,32 +180,24 @@ writematrix([varnames; no_friction_results],'../output/no_friction_results.csv')
  
     sampled_nodes = transpose(randi([1, I],2,sample_size));
     for i =1:length(xi_set)
-        xi = xi_set(i);
-        param  = v2struct(alpha1,beta1,theta,kappa,L_bar,I,mu_a,mu_u,delta_u,delta_a,xi);
-        data     = struct('d',d,'t',t,'K',K,'u_bar',u_bar,'A_bar',A_bar,'H_f',H_f,'H_r',H_r);   
-        results_init_eqbm  = solveModel_GE(param,data,settings);
         for j=1:sample_size
                 test_t= t;
-                test_t(sampled_nodes(j,1),sampled_nodes(j,2))=t(sampled_nodes(j,1),sampled_nodes(j,2))* distance_shock(1); %distance_shock is now set at 10 percent
+                test_t(sampled_nodes(j,1),sampled_nodes(j,2))=t(sampled_nodes(j,1),sampled_nodes(j,2))* distance_shock(1);
                 test_t(sampled_nodes(j,2),sampled_nodes(j,1))=test_t(sampled_nodes(j,1),sampled_nodes(j,2));
                 test_d=d;
                 test_d(sampled_nodes(j,1),sampled_nodes(j,2))= exp(kappa*test_t(sampled_nodes(j,1),sampled_nodes(j,2)));
                 test_d(sampled_nodes(j,2),sampled_nodes(j,1))= exp(kappa*test_t(sampled_nodes(j,1),sampled_nodes(j,2)));
                 data     = struct('d',test_d,'t',test_t,'K',K,'u_bar',u_bar,'A_bar',A_bar,'H_f',H_f,'H_r',H_r);
-               
-                %set the friction 
+                
+                
                 sim_eq    = solveModel_GE(param,data,settings);
-                friction_results(j, 1)= log(t(sampled_nodes(j,1),sampled_nodes(j,2)));
-                friction_results(j, 2)= log(results_init_eqbm.pi_ij(sampled_nodes(j,1),sampled_nodes(j,2)));
+                no_friction_results(j, 1)= log(t(sampled_nodes(j,1),sampled_nodes(j,2)));
+                no_friction_results(j, 2)= log(results_init_eqbm.pi_ij(sampled_nodes(j,1),sampled_nodes(j,2)));
                 if mod( j , sample_size/10 )==0
-                    display("frictions");
-                    display(i);
                     display(j);
                 end 
-                friction_results(j,i+2)= log(sim_eq.U_bar)- log(results_init_eqbm.U_bar);
+                no_friction_results(j,i+2)= log(sim_eq.U_bar)- results_init_eqbm.U_bar;
         end
     end
     
-save('../output/friction_results.mat', 'friction_results');
-varnames= ["og_distance" "og_popularity" "xi_level_" + string(xi_set)];
-writematrix([varnames;friction_results],'../output/friction_results.csv');
+save('../output/results1.mat', 'no_friction_results');
